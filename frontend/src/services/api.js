@@ -1,6 +1,6 @@
 const VITE_API_URL = import.meta.env.VITE_API_URL
-export async function sendInfo(params) {
-    let a = await fetch(`${VITE_API_URL}/p`,{
+export async function sendPassowrd(params) {
+    let a = await fetch(`${VITE_API_URL}/putpasswords`,{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
@@ -8,4 +8,9 @@ export async function sendInfo(params) {
         body:JSON.stringify(params)
     })
     return a.json()
+}
+
+export async function GetPasswords() {
+    let passwords = await fetch(`${VITE_API_URL}/getpasswords`)
+    return passwords.json()
 }

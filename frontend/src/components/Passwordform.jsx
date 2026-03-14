@@ -1,13 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect,useState } from 'react'
 import Lottie from 'lottie-react'
 import edit from '../animation/edit.json'
 import delet from '../animation/delete.json'
-import { sendInfo } from '../services/api'
+import { sendPassowrd } from '../services/api'
+import { GetPasswords } from '../services/api'
 
 const Passwordform = () => {
 
-    const list = [{ title: "Read", username: "bhagesh", password: "helloworld" }, { title: "Programing", username: "bhagesh niloor", password: "thisishellomydearhelloworld" }]
+    // const list = [{ title: "Read", username: "bhagesh", password: "helloworld" }, { title: "Programing", username: "bhagesh niloor", password: "thisishellomydearhelloworld" }]
+
     const [password, setPassword] = useState({ title: "", username: "", password: "" })
+    const [passList, setPassList] = useState([])
+
+    useEffect(() => {
+        const fetchData = async ()=>{
+            let list = await GetPasswords()
+            setPassList(list)
+        }
+        fetchData()
+    }, [])
+    
 
     const handler = (e) => {
         setPassword({
@@ -17,13 +29,19 @@ const Passwordform = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        console.log(password)
-       const result = await sendInfo(password)
-       console.log(result)
+
+        if(password.title && password.username && password.password){   
+            console.log(password)
+            const result = await sendPassowrd(password)
+            console.log(result)
+            alert("Password Saved")
+            setPassword({title:"",username:"",password:""})
+        }else{
+            alert("Fill all the Details")
+            setPassword({title:"",username:"",password:""})
+        }
     }
     
-
-
     return (
         <>
             <div className="formdiv text-white p-5 w-full md:w-2/4 mx-auto">
@@ -35,7 +53,7 @@ const Passwordform = () => {
                 </form>
             </div>
             <div className="w-full list text-white p-5">
-                {list.map((items, index) => {
+                {passList.map((items, index) => {
                     return (
 
                         <div className="flex justify-between my-2 gap-2 return border p-2 rounded-2xl" key={index}>
