@@ -1,7 +1,8 @@
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Lottie from 'lottie-react'
 import edit from '../animation/edit.json'
 import delet from '../animation/delete.json'
+import eye from '../animation/Eye.json'
 import { sendPassowrd } from '../services/api'
 import { GetPasswords } from '../services/api'
 
@@ -11,15 +12,23 @@ const Passwordform = () => {
 
     const [password, setPassword] = useState({ title: "", username: "", password: "" })
     const [passList, setPassList] = useState([])
+    const [visiblility, setVisibility] = useState({})
+
+    const togglePassword = (index) => {
+        setVisibility(prev => ({
+            ...prev,
+            [index]: !prev[index]
+        }))
+    }
 
     useEffect(() => {
-        const fetchData = async ()=>{
+        const fetchData = async () => {
             let list = await GetPasswords()
             setPassList(list)
         }
         fetchData()
     }, [])
-    
+
 
     const handler = (e) => {
         setPassword({
@@ -30,18 +39,18 @@ const Passwordform = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
 
-        if(password.title && password.username && password.password){   
+        if (password.title && password.username && password.password) {
             console.log(password)
             const result = await sendPassowrd(password)
             console.log(result)
             alert("Password Saved")
-            setPassword({title:"",username:"",password:""})
-        }else{
+            setPassword({ title: "", username: "", password: "" })
+        } else {
             alert("Fill all the Details")
-            setPassword({title:"",username:"",password:""})
+            setPassword({ title: "", username: "", password: "" })
         }
     }
-    
+
     return (
         <>
             <div className="formdiv text-white p-5 w-full md:w-2/4 mx-auto">
@@ -63,8 +72,15 @@ const Passwordform = () => {
                             <div className='flex items-center break-all'>
                                 {items.username}
                             </div>
-                            <div className='flex items-center break-all '>
-                                {items.password}
+                            <div className='flex items-center break-all gap-2'>
+                                <div className="password mx-auto">
+                                {visiblility[index] ? items.password : "••••••••"}
+                                </div>
+                                <button onClick={()=>togglePassword(index)}>
+                                    <div className="h-8 w-7 shrink-0">
+                                        <Lottie animationData={eye} loop={true}></Lottie>
+                                    </div>
+                                </button>
                             </div>
                             <div className="icons my-auto">
                                 <div className='h-8 w-7 shrink-0'>
