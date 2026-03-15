@@ -11,6 +11,7 @@ const decrypt = require('./utils/decrypt')
 
 const app = express()
 
+// connect to the mongodb
 mongoose.connect(`${MONGO_URI}`)
 console.log("mongodb connected")
 app.use(cors())
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
     res.send("server is running")
 })
 
+// To set passwords in db
 app.post('/putpasswords',async (req, res) => {
     const {title,username} = req.body
     const password = req.body.password
@@ -36,6 +38,7 @@ app.post('/putpasswords',async (req, res) => {
 
 })
 
+// To fetch passwords from db
 app.get('/getpasswords', async (req,res)=>{
     const passwords = await Pass.find()
 
@@ -46,6 +49,17 @@ app.get('/getpasswords', async (req,res)=>{
         }
     })
     res.json(decriptedpassword)
+})
+
+app.post('/updatepassword', async (req,res)=>{
+    const {_id,title,username,password} = req.body
+
+    const encryptPassword = encrypt(password)
+    const updated = await Pass.findByIdAndUpdate(_id,{
+        title,username,password:encryptPassword
+    },{new:true})
+    
+    res.json(updated)
 })
 
 app.listen(PORT, () => {
