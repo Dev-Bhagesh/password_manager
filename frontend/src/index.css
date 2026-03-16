@@ -5,3 +5,7 @@ body{
     padding: 0px;
     overflow-x: hidden;
 }
+
+.perspective{
+    perspective: 1000px;
+}

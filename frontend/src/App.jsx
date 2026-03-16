@@ -5,6 +5,8 @@ import Navbar from './components/Navbar'
 import Maneger from './components/Maneger'
 import Passwordform from './components/Passwordform'
 import List from './components/List'
+import Login from './components/Login'
+import Register from './components/Register'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -12,10 +14,12 @@ function App() {
   return (
     <>
     <div className=''>
-    <Navbar/>
+    {/* <Navbar/>
     <Maneger/>
-    <Passwordform/>
+    <Passwordform/> */}
     {/* <List/> */}
+    <Login/>
+    {/* <Register/> */}
     </div>
     </>
   )
