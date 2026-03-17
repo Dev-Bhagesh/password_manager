@@ -1,27 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Navbar from './components/Navbar'
-import Maneger from './components/Maneger'
-import Passwordform from './components/Passwordform'
-import List from './components/List'
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Login from './components/Login'
 import Register from './components/Register'
+import Passwordform from './components/Passwordform'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-    <div className=''>
-    {/* <Navbar/>
-    <Maneger/>
-    <Passwordform/> */}
-    {/* <List/> */}
-    <Login/>
-    {/* <Register/> */}
-    </div>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Passwordform />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

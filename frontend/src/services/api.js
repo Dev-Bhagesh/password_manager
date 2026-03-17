@@ -25,3 +25,25 @@ export async function UpdatePassword(params) {
     })
     return udatedPassword.json()
 }
+
+export async function Registerfunction(params) {
+    let registration = await fetch(`${VITE_API_URL}/register`,{
+        method:'POST',
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(params)
+    })
+    return registration.json()
+}
+
+export async function Loginfunction(params) {
+    let login = await fetch(`${VITE_API_URL}/login`,{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(params)
+    })
+    return login.json()
+}
