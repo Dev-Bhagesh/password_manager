@@ -6,6 +6,7 @@ import eye from '../animation/Eye.json'
 import { sendPassowrd } from '../services/api'
 import { GetPasswords } from '../services/api'
 import {UpdatePassword} from '../services/api'
+import { DeletePassword } from '../services/api'
 
 const Passwordform = () => {
 
@@ -95,12 +96,20 @@ const Passwordform = () => {
         setRefresh(prev=>!prev)
     }
 
-    const deletePassword = async (items)=>{
-        const _id = items._id
-        const title = items.title
-        const password = items.password
-        const username = items.username
-        alert(`${_id} ${title} ${password} ${username}`) 
+    const deletePassword = async (items) => {
+        const confirmDelete = confirm("Are you sure you want to delete?")
+        if (!confirmDelete) return
+    
+        const result = await DeletePassword(items._id)
+    
+        if (result.message === "Deleted successfully") {
+            alert("Deleted!")
+    
+            // ✅ Update UI instantly (best way)
+            setPassList(prev => prev.filter(p => p._id !== items._id))
+        } else {
+            alert(result.message)
+        }
     }
 
 

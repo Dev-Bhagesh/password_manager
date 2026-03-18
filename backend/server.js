@@ -9,6 +9,8 @@ const encrypt = require('./utils/enctypt')
 const decrypt = require('./utils/decrypt')
 const User = require('./models/user')
 const bcrypt = require('bcrypt')
+const session = require('express-session')
+const SESSION_KEY = process.env.SESSION_KEY
 
 
 const app = express()
@@ -16,12 +18,26 @@ const app = express()
 // connect to the mongodb
 mongoose.connect(`${MONGO_URI}`)
 console.log("mongodb connected")
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:5173", // your frontend URL
+    credentials: true
+}))
 app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send("server is running")
 })
+
+// Session
+app.use(session({
+    secret: SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: false, // true only in HTTPS
+        maxAge: 1000 * 60 * 60 // 1 hour
+    }
+}))
 
 // To set passwords in db
 app.post('/putpasswords', async (req, res) => {
@@ -29,8 +45,9 @@ app.post('/putpasswords', async (req, res) => {
     const password = req.body.password
     const encryptedpassword = encrypt(password)
     const data = req.body
+    const userID = req.session.user.id
     console.log(data)
-    const dbpass = new Pass({ title, username, password: encryptedpassword })
+    const dbpass = new Pass({ userID,title, username, password: encryptedpassword })
     dbpass.save()
     console.log("insertion successfull")
     res.json({
@@ -40,17 +57,56 @@ app.post('/putpasswords', async (req, res) => {
 
 })
 
+
+app.post('/login', async (req, res) => {
+    try {
+
+        const { name, email, password } = req.body
+        let user = await User.findOne({ email })
+        if (!user) return res.status(400).json({ message: 'User Not found' })
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" })
+
+        // ✅ CREATE SESSION HERE
+        req.session.user = {
+            id: user._id,
+            name: user.name,
+            email: user.email
+        }
+
+        res.status(200).json({ success: true, userID: user._id, message: `Welcome ${user.name}` })
+    } catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+
+})
+
+
 // To fetch passwords from db
 app.get('/getpasswords', async (req, res) => {
-    const passwords = await Pass.find()
-
-    const decriptedpassword = passwords.map((item) => {
-        return {
-            ...item._doc,
-            password: decrypt(item.password)
+    console.log("getpassword triggered")
+    try{
+        if(!req.session.user){
+            return res.status(401).json({message:"Unauthorized User"})
         }
-    })
-    res.json(decriptedpassword)
+
+        const userID = req.session.user.id
+        console.log("session userID set in getpassword")
+        const password = await Pass.find({userID:userID})
+
+        const decriptedpassword = password.map((item)=>{
+            return{
+                ...item._doc,
+                password:decrypt(item.password)
+            }
+        })
+        console.log("decripted passwords in /getpassword")
+        res.json(decriptedpassword)
+        console.log("Decrepted passwords sent to frontend")
+    }catch(err){
+        res.status(500).json({message:"Server error"})
+    }
 })
 
 app.post('/updatepassword', async (req, res) => {
@@ -76,21 +132,31 @@ app.post('/register', async (req, res) => {
     res.json(user)
 })
 
-app.post('/login', async (req, res) => {
+app.delete('/deletepassword/:id', async (req, res) => {
     try {
+        // ✅ Check session
+        if (!req.session.user) {
+            return res.status(401).json({ message: "Unauthorized" })
+        }
 
-        const { name, email, password } = req.body
-        let user = await User.findOne({ $or: [{ email }] })
-        if (!user) return res.status(400).json({ message: 'User Not found' })
+        const userID = req.session.user.id
+        const passwordID = req.params.id
 
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" })
+        // ✅ Delete ONLY matching id + user
+        const deleted = await Pass.findOneAndDelete({
+            _id: passwordID,
+            userID: userID
+        })
 
-        res.status(200).json({ success: true, username: user.username, message: `Welcome ${user.name}` })
+        if (!deleted) {
+            return res.status(404).json({ message: "Password not found" })
+        }
+
+        res.json({ message: "Deleted successfully" })
+
     } catch (err) {
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error" })
     }
-
 })
 
 app.listen(PORT, () => {

@@ -6,20 +6,23 @@ import { useNavigate } from "react-router-dom"
 
 function Login() {
     const [isFlipped, setisFlipped] = useState(false)
-    const [loginData, setLoginData] = useState({name:"",email:"",password:""})
+    const [userID, setUserID] = useState('')
+    const [loginData, setLoginData] = useState({ name: "", email: "", password: "" })
     const navigate = useNavigate()
 
-    const LoginHandler =async ()=>{
-        const res =await Loginfunction(loginData)
-        console.log(res)
-        if(res){
+    const LoginHandler = async () => {
+        const res = await Loginfunction(loginData)
+        console.log(`${res.userID} ${res.success} this is the returned data`)
+        if (res.success === true) {
             navigate('/dashboard')
         }
+        console.log(`${res} this is the returned data 2`)
+        setUserID(res.userID)
     }
 
-    const changeHandler=(e)=>{
+    const changeHandler = (e) => {
         setLoginData({
-            ...loginData,[e.target.name]:e.target.value
+            ...loginData, [e.target.name]: e.target.value
         })
     }
     return (
@@ -28,19 +31,22 @@ function Login() {
                 <div className='flex justify-around items-center h-screen perspective'>
 
                     <div className="text-white flex justify-center gap-10 flex-col items-center p-5 login border border-blue-400 md:w-2/8 md:h-95 rounded-4xl ">
-                            <div className="heading">
-                                <h1 className='font-bold text-3xl '>Log In</h1>
-                            </div>
-                        <form action={LoginHandler}>
+                        <div className="heading">
+                            <h1 className='font-bold text-3xl '>Log In</h1>
+                        </div>
+                        <form onSubmit={(e) => {
+                            e.preventDefault()
+                            LoginHandler()
+                        }}>
                             <div className="inputs flex flex-col gap-5">
                                 <div className="Name w-full p-1">
                                     <input name='name' value={loginData.name} onChange={changeHandler} className='border p-2 md:w-[300px] sm:w-[100px] rounded-3xl ' type="text" placeholder='Enter Name' />
                                 </div>
                                 <div className="email w-full p-1">
-                                    <input className='border p-2 md:w-[300px] sm:w-[100px] rounded-3xl ' type="text" placeholder='Enter Email' />
+                                    <input name='email' value={loginData.email} onChange={changeHandler} className='border p-2 md:w-[300px] sm:w-[100px] rounded-3xl ' type="text" placeholder='Enter Email' />
                                 </div>
                                 <div className="password w-full p-1">
-                                    <input className='border p-2 md:w-[300px] sm:w-[100px] rounded-3xl ' type="text" placeholder='Enter password' />
+                                    <input name='password' value={loginData.password} onChange={changeHandler} className='border p-2 md:w-[300px] sm:w-[100px] rounded-3xl ' type="text" placeholder='Enter password' />
                                 </div>
                             </div>
                             <button className='border sm:w-[300px] w-[200px] border-blue-400 p-2 rounded-2xl md:w-75'>Log In</button>
