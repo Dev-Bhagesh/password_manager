@@ -16,10 +16,21 @@ const app = express()
 // connect to the mongodb
 mongoose.connect(`${MONGO_URI}`)
 console.log("mongodb connected")
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://password-manager-ten-pearl.vercel.app"
+];
+
 app.use(cors({
-    origin: "http://localhost:5173", // your frontend URL
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true
-}))
+}));
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -45,7 +56,7 @@ app.post('/putpasswords', async (req, res) => {
     const data = req.body
     const userID = req.session.user.id
     // console.log(data)
-    const dbpass = new Pass({ userID,title, username, password: encryptedpassword })
+    const dbpass = new Pass({ userID, title, username, password: encryptedpassword })
     dbpass.save()
     // console.log("insertion successfull")
     res.json({
@@ -84,26 +95,26 @@ app.post('/login', async (req, res) => {
 // To fetch passwords from db
 app.get('/getpasswords', async (req, res) => {
     // console.log("getpassword triggered")
-    try{
-        if(!req.session.user){
-            return res.status(401).json({message:"Unauthorized User"})
+    try {
+        if (!req.session.user) {
+            return res.status(401).json({ message: "Unauthorized User" })
         }
 
         const userID = req.session.user.id
         // console.log("session userID set in getpassword")
-        const password = await Pass.find({userID:userID})
+        const password = await Pass.find({ userID: userID })
 
-        const decriptedpassword = password.map((item)=>{
-            return{
+        const decriptedpassword = password.map((item) => {
+            return {
                 ...item._doc,
-                password:decrypt(item.password)
+                password: decrypt(item.password)
             }
         })
         // console.log("decripted passwords in /getpassword")
         res.json(decriptedpassword)
         // console.log("Decrepted passwords sent to frontend")
-    }catch(err){
-        res.status(500).json({message:"Server error"})
+    } catch (err) {
+        res.status(500).json({ message: "Server error" })
     }
 })
 
