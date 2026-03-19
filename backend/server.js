@@ -4,7 +4,7 @@ const cors = require('cors')
 const Pass = require('./models/password')
 require("dotenv").config()
 const MONGO_URI = process.env.MONGO_URI
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000;
 const encrypt = require('./utils/enctypt')
 const decrypt = require('./utils/decrypt')
 const User = require('./models/user')
@@ -169,5 +169,5 @@ app.delete('/deletepassword/:id', async (req, res) => {
 })
 
 app.listen(PORT, () => {
-    console.log(`server is running on port ${PORT}`)
-})
+    console.log(`Server running on port ${PORT}`);
+  });
