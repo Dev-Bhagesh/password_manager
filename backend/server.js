@@ -17,21 +17,24 @@ app.set("trust proxy", 1);
 // connect to the mongodb
 mongoose.connect(`${MONGO_URI}`)
 console.log("mongodb connected")
+
 const allowedOrigins = [
     "http://localhost:5173",
-    "https://password-manager-ten-pearl.vercel.app"
-];
-
-app.use(cors({
+    "https://password-manager-ten-pearl.vercel.app",
+    "https://password-manager-git-main-dev-bhageshs-projects.vercel.app"
+  ];
+  
+  app.use(cors({
     origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
     credentials: true
-}));
+  }));
+
 app.use(express.json())
 
 app.get('/', (req, res) => {
