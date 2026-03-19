@@ -18,22 +18,15 @@ app.set("trust proxy", 1);
 mongoose.connect(`${MONGO_URI}`)
 console.log("mongodb connected")
 
-const allowedOrigins = [
-    "http://localhost:5173",
-    "https://password-manager-ten-pearl.vercel.app",
-    "https://password-manager-git-main-dev-bhageshs-projects.vercel.app"
-  ];
-  
-  app.use(cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true
-  }));
+const corsOptions = {
+    origin: "https://password-manager-ten-pearl.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+};
+
+app.use(cors(corsOptions));
+  app.options("*", cors(corsOptions)); // 🔥 VERY IMPORTANT
 
 app.use(express.json())
 
@@ -45,14 +38,13 @@ app.get('/', (req, res) => {
 app.use(session({
     secret: SESSION_KEY,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
-        secure: true,          // ✅ REQUIRED for HTTPS
-        httpOnly: true,
-        sameSite: "none",      // ✅ REQUIRED for cross-origin
-        maxAge: 1000 * 60 * 60
+      secure: true,
+      httpOnly: true,
+      sameSite: "none"
     }
-}))
+  }));
 
 // To set passwords in db
 app.post('/putpasswords', async (req, res) => {
