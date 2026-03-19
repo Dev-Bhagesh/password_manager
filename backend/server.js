@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 const SESSION_KEY = process.env.SESSION_KEY
 const app = express()
+app.set("trust proxy", 1);
 
 // connect to the mongodb
 mongoose.connect(`${MONGO_URI}`)
@@ -43,8 +44,10 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: false, // true only in HTTPS
-        maxAge: 1000 * 60 * 60 // 1 hour
+        secure: true,          // ✅ REQUIRED for HTTPS
+        httpOnly: true,
+        sameSite: "none",      // ✅ REQUIRED for cross-origin
+        maxAge: 1000 * 60 * 60
     }
 }))
 
