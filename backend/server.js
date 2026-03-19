@@ -25,7 +25,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type"]
 }));
 
-app.options("*", cors()); // 🔥 REQUIRED
+app.options("/*", cors()); // 🔥 REQUIRED
 // =====================================================================
 app.use(express.json())
 
