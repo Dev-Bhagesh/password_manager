@@ -3,10 +3,12 @@ import Lottie from 'lottie-react'
 import edit from '../animation/edit.json'
 import delet from '../animation/delete.json'
 import eye from '../animation/Eye.json'
+import CLP from '../animation/CLP.json'
 import { sendPassowrd } from '../services/api'
 import { GetPasswords } from '../services/api'
 import {UpdatePassword} from '../services/api'
 import { DeletePassword } from '../services/api'
+import { Navigate } from 'react-router-dom'
 
 const Passwordform = () => {
 
@@ -112,6 +114,11 @@ const Passwordform = () => {
         }
     }
 
+    const copy = (password)=>{
+        navigator.clipboard.writeText(password)
+        alert("Text copied to clipboard")
+    }
+
 
 
     return (
@@ -160,6 +167,11 @@ const Passwordform = () => {
                                 <div className='h-8 w-7 shrink-0'>
                                     <button onClick={()=>deletePassword(items)}>
                                         <Lottie animationData={delet} loop={true}></Lottie>
+                                    </button>
+                                </div>
+                                <div className='h-8 w-7 shrink-0'>
+                                    <button onClick={()=>copy(items.password)}>
+                                        <Lottie animationData={CLP} loop={true}></Lottie>
                                     </button>
                                 </div>
                             </div>

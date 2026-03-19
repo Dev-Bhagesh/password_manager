@@ -11,8 +11,6 @@ const User = require('./models/user')
 const bcrypt = require('bcrypt')
 const session = require('express-session')
 const SESSION_KEY = process.env.SESSION_KEY
-
-
 const app = express()
 
 // connect to the mongodb
@@ -46,10 +44,10 @@ app.post('/putpasswords', async (req, res) => {
     const encryptedpassword = encrypt(password)
     const data = req.body
     const userID = req.session.user.id
-    console.log(data)
+    // console.log(data)
     const dbpass = new Pass({ userID,title, username, password: encryptedpassword })
     dbpass.save()
-    console.log("insertion successfull")
+    // console.log("insertion successfull")
     res.json({
         message: "Password saved",
         data: data
@@ -85,14 +83,14 @@ app.post('/login', async (req, res) => {
 
 // To fetch passwords from db
 app.get('/getpasswords', async (req, res) => {
-    console.log("getpassword triggered")
+    // console.log("getpassword triggered")
     try{
         if(!req.session.user){
             return res.status(401).json({message:"Unauthorized User"})
         }
 
         const userID = req.session.user.id
-        console.log("session userID set in getpassword")
+        // console.log("session userID set in getpassword")
         const password = await Pass.find({userID:userID})
 
         const decriptedpassword = password.map((item)=>{
@@ -101,9 +99,9 @@ app.get('/getpasswords', async (req, res) => {
                 password:decrypt(item.password)
             }
         })
-        console.log("decripted passwords in /getpassword")
+        // console.log("decripted passwords in /getpassword")
         res.json(decriptedpassword)
-        console.log("Decrepted passwords sent to frontend")
+        // console.log("Decrepted passwords sent to frontend")
     }catch(err){
         res.status(500).json({message:"Server error"})
     }
