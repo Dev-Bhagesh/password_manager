@@ -12,14 +12,12 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 const SESSION_KEY = process.env.SESSION_KEY
 const app = express()
-app.set("trust proxy", 1);
 
 // connect to the mongodb
 mongoose.connect(`${MONGO_URI}`)
 console.log("mongodb connected")
 
 // cors
-const cors = require("cors");
 app.use(cors({
   origin: "https://password-manager-ten-pearl.vercel.app",
   credentials: true,
