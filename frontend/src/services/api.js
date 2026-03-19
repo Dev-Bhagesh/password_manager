@@ -39,6 +39,7 @@ export async function Registerfunction(params) {
 }
 
 export async function Loginfunction(params) {
+    console.log(import.meta.env.VITE_API_URL)
     let login = await fetch(`${VITE_API_URL}/login`,{
         method:"POST",
         headers:{
