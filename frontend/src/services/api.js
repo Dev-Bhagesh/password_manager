@@ -1,6 +1,6 @@
 const VITE_API_URL = import.meta.env.VITE_API_URL
 export async function sendPassowrd(params) {
-    let a = await fetch(`${VITE_API_URL}/putpasswords`,{
+    let a = await fetch(`https://password-manager-nxb2.onrender.com/putpasswords`,{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
@@ -12,12 +12,12 @@ export async function sendPassowrd(params) {
 }
 
 export async function GetPasswords() {
-    let passwords = await fetch(`${VITE_API_URL}/getpasswords`,{credentials: "include"})
+    let passwords = await fetch(`https://password-manager-nxb2.onrender.com/getpasswords`,{credentials: "include"})
     return passwords.json()
 }
 
 export async function UpdatePassword(params) {
-    let udatedPassword = await fetch(`${VITE_API_URL}/updatepassword`,{
+    let udatedPassword = await fetch(`https://password-manager-nxb2.onrender.com/updatepassword`,{
         method:'POST',
         headers:{
             "Content-Type":'application/json'
@@ -28,7 +28,7 @@ export async function UpdatePassword(params) {
 }
 
 export async function Registerfunction(params) {
-    let registration = await fetch(`${VITE_API_URL}/register`,{
+    let registration = await fetch(`https://password-manager-nxb2.onrender.com/register`,{
         method:'POST',
         headers:{
             "Content-Type":"application/json"
@@ -39,7 +39,7 @@ export async function Registerfunction(params) {
 }
 
 export async function Loginfunction(params) {
-    let login = await fetch(`${VITE_API_URL}/login`,{
+    let login = await fetch(`https://password-manager-nxb2.onrender.com/login`,{
         method:"POST",
         headers:{
             "Content-Type":"application/json"
@@ -51,7 +51,7 @@ export async function Loginfunction(params) {
 }
 
 export async function DeletePassword(id) {
-    let res = await fetch(`${VITE_API_URL}/deletepassword/${id}`, {
+    let res = await fetch(`https://password-manager-nxb2.onrender.com/deletepassword/${id}`, {
         method: "DELETE",
         credentials: "include" // 🔥 required for session
     })
