@@ -14,8 +14,14 @@ const SESSION_KEY = process.env.SESSION_KEY
 const app = express()
 
 // connect to the mongodb
-mongoose.connect(`${MONGO_URI}`)
-console.log("mongodb connected")
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => {
+    console.error("MongoDB connection failed:", err)
+    process.exit(1)
+  });
+
+app.set("trust proxy", 1);
 
 // cors
 app.use(cors({
@@ -24,18 +30,11 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
 }));
-
 app.options("/*", cors()); // 🔥 REQUIRED
-// =====================================================================
+
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send("server is running")
-})
-
 // Session
-app.set("trust proxy", 1);
-
 app.use(session({
   secret: SESSION_KEY,
   resave: false,
@@ -46,6 +45,13 @@ app.use(session({
     httpOnly: true
   }
 }));
+
+// =====================================================================
+
+app.get('/', (req, res) => {
+    res.send("server is running")
+})
+
 
 // To set passwords in db
 app.post('/putpasswords', async (req, res) => {
