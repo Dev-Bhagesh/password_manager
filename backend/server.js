@@ -95,7 +95,15 @@ app.post('/login', async (req, res) => {
             email: user.email
         }
 
-        res.status(200).json({ success: true, userID: user._id, message: `Welcome ${user.name}` })
+        // force save of sessions
+        req.session.save((err) => {
+            if (err) {
+                console.error("Session save error:", err)
+                return res.status(500).json({ message: "Session error" })
+            }
+            res.status(200).json({ success: true, userID: user._id, message: `Welcome ${user.name}` })
+        })
+
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }
