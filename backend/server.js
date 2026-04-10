@@ -25,25 +25,24 @@ app.set("trust proxy", 1);
 
 // cors
 app.use(cors({
-  origin: ["http://localhost:5173","https://password-manager-nu-liard.vercel.app"],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type"]
-}));
-
-app.use(express.json())
-
-// Session
-app.use(session({
+    origin: "https://password-manager-nu-liard.vercel.app",
+    credentials: true
+  }))
+  
+  app.use(express.json())
+  
+  app.set("trust proxy", 1)
+  
+  app.use(session({
     secret: SESSION_KEY,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true, //set this to true after deployment
+      secure: true,
       sameSite: "none",
       httpOnly: true
     }
-  }));
+  }))
 
 // =====================================================================
 
