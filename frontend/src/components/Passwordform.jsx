@@ -25,7 +25,7 @@ const Passwordform = () => {
         const fetchData = async () => {
             let list = await GetPasswords()
             console.log(list) // check structure
-            setPassList(list.passwords) // 🔥 fix
+            setPassList(Array.isArray(list) ? list : []) // 🔥 fix
         }
         fetchData()
     }, [refresh])

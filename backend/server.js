@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt')
 const session = require('express-session')
 const SESSION_KEY = process.env.SESSION_KEY
 const app = express()
+const MongoStore = require('connect-mongo');
 
 // connect to the mongodb
 mongoose.connect(MONGO_URI)
@@ -36,6 +37,7 @@ app.use(cors({
     resave: false,
     saveUninitialized: false,
     proxy:true, //this added after cors02 commit
+    store: MongoStore.create({ mongoUrl: MONGO_URI }),
     cookie: {
       secure: true,
       sameSite: "none",
@@ -106,6 +108,7 @@ app.get('/getpasswords', async (req, res) => {
     // console.log("getpassword triggered")
     try {
         if (!req.session.user) {
+            console.log("session error is triggered in /getpasswords")
             return res.status(401).json({ message: "Unauthorized User" })
         }
 
