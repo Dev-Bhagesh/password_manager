@@ -19,15 +19,17 @@ const Passwordform = () => {
     const [isEditing, setIsEditing] = useState(false)
     const [editingID,setEditingID] = useState({_id:"",title:"",username:"",password:""})
 
-    
+// ===================== after deployement error hunting=====================================================================================
     // Fetch password from db
     useEffect(() => {
         const fetchData = async () => {
             let list = await GetPasswords()
-            setPassList(list)
+            console.log(list) // check structure
+            setPassList(list.passwords) // 🔥 fix
         }
         fetchData()
-    },[refresh])
+    }, [refresh])
+// ========================================================================================================================================
     
     // Focus on input fields
     const handler = (e) => {
@@ -136,7 +138,8 @@ const Passwordform = () => {
                 </form>
             </div>
             <div className="w-full list text-white p-5">
-                {passList.map((items, index) => {
+                {/* {passList.map((items, index) => {  // updated after deploying */}
+                {Array.isArray(passList) && passList.map((items, index) =>{
                     return (
                         <div className="flex justify-between my-2 gap-2 return border p-2 rounded-2xl" key={index}>
                             {/* <div>
