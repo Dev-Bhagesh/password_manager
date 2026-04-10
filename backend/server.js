@@ -40,7 +40,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
       secure: true, //set this to true after deployment
-      sameSite: "lax",
+      sameSite: "none",
       httpOnly: true
     }
   }));

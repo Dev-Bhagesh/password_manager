@@ -22,7 +22,8 @@ export async function UpdatePassword(params) {
         headers:{
             "Content-Type":'application/json'
         },
-        body:JSON.stringify(params)
+        body:JSON.stringify(params),
+        credentials: "include"
     })
     return udatedPassword.json()
 }
