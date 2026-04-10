@@ -31,16 +31,16 @@ app.use(cors({
   
   app.use(express.json())
   
-  app.set("trust proxy", 1)
-  
   app.use(session({
     secret: SESSION_KEY,
     resave: false,
     saveUninitialized: false,
+    proxy:true, //this added after cors02 commit
     cookie: {
       secure: true,
       sameSite: "none",
-      httpOnly: true
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24
     }
   }))
 
@@ -57,6 +57,12 @@ app.post('/putpasswords', async (req, res) => {
     const password = req.body.password
     const encryptedpassword = encrypt(password)
     const data = req.body
+
+    // this if added after cors02 commit
+    if (!req.session.user) {
+        return res.status(401).json({ message: "Unauthorized User" })
+    }
+
     const userID = req.session.user.id
     // console.log(data)
     const dbpass = new Pass({ userID, title, username, password: encryptedpassword })
