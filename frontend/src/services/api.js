@@ -28,6 +28,7 @@ export async function UpdatePassword(params) {
 }
 
 export async function Registerfunction(params) {
+    console.log(VITE_API_URL)
     let registration = await fetch(`${VITE_API_URL}/register`,{
         method:'POST',
         headers:{

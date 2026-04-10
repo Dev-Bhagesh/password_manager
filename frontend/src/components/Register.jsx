@@ -22,7 +22,7 @@ function Register({ setisFlipped, isFlipped }) {
     return (
         <div className='flex justify-around items-center h-screen'>
             <div className="text-white flex justify-center gap-10 flex-col items-center p-5 login border border-blue-400 md:w-2/8 rounded-4xl ">
-                <form action={RegistrationSubmit}>
+                <form onSubmit={(e) => { e.preventDefault(); RegistrationSubmit(); }}>
                     <div className="heading flex justify-center">
                         <h1 className='font-bold text-3xl '>Register</h1>
                     </div>

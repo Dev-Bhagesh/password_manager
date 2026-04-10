@@ -25,26 +25,25 @@ app.set("trust proxy", 1);
 
 // cors
 app.use(cors({
-  origin: "https://password-manager-ten-pearl.vercel.app",
+  origin: "http://localhost:5173",
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type"]
 }));
-app.options("/*", cors()); // 🔥 REQUIRED
 
 app.use(express.json())
 
 // Session
 app.use(session({
-  secret: SESSION_KEY,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,
-    sameSite: "none",
-    httpOnly: true
-  }
-}));
+    secret: SESSION_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, //set this to true after deployment
+      sameSite: "lax",
+      httpOnly: true
+    }
+  }));
 
 // =====================================================================
 
